@@ -1,4 +1,69 @@
 ## Project: Perception Pick & Place
+
+## Robot Arm Kinematics Project 
+-----------------------------------------
+[//]: # (Image and equiation References)
+[world3]: ./images/world3.png
+[image1]: ./images/dust.png
+[image2]: ./images/.png
+[matrix1]:./images/confusion_matrices.png
+(Introduction)
+
+This is an Udacity project for the Robotics Software Nanodegree Program, involvin the topic of sensor detection with an rgb-d sensor. The project is developed in ROS environment and uses gazebo and rviz to simulate the sensor and the robot that would recognize and move the objects.
+
+ 
+(Development)
+
+### 1.
+The project consiste in recognice eight diferent objects, comming from differents "worlds" in the simulation. (sticky_notes, book, snacks, biscuits, eraser, soap2, soap, glue)
+
+![simulation_objects][world3]
+
+To train an SVM model to identify each model, we are setting up to SVM with linear kernel and the ![]caputure_feature.py script to spaw the objects 100 times.
+the features to recognize each object are a histograms of the color and a 3D vector for each point cloud caputed by the RGB-D camera.
+once we capute the data for each object pawning in different positions we use this script to show the training data obtaining the next result.
+
+![confusion_matrices][matrix1]
+
+### 2.
+
+The simulations in ROS include a RGB-D camera able to capture the objects shown above,  to create a filter that label and recognice each object, we need to create a node and subscruve to `/pr2/world/points`topic. the image detected for the camera looks like this.
+
+![dust_original][image1]
+
+### 3.
+
+### RANSAC
+
+The 3D data displayed for the camera contains a lot of "dust" closer to the objects this makes which are difficult to recognice like this. Thus we would apply different prosedures to filter this points.
+
+The fisrt step is to apply a outliner filter that remove all the points furder from the object edges.
+
+![dist_filter_result][image2]
+
+
+statistical filtering
+
+voxel
+
+filtering
+
+RANSAC
+
+(Conclusion-n-Comments)
+
+(Code Implementation)
+### Code Index
+
+-
+	-
+	-
+	-
+-
+-
+	-
+	-
+
 ### Writeup Template: You can use this file as a template for your writeup if you want to submit it as a markdown file, but feel free to use some other method and submit a pdf if you prefer.
 
 ---
