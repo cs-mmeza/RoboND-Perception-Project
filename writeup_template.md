@@ -4,7 +4,7 @@
 [//]: # (Image and equiation References)
 [world3]: ./images/world3.png
 [image1]: ./images/dust.png
-[image2]: ./images/voxel.PNG
+[image2]: ./images/voxel.png
 [image3]: ./images/pass_trought.PNG
 [image4]: ./images/ransac.png
 [image5]: ./images/Clustering2.png
@@ -13,16 +13,20 @@
 [matrix1]:./images/confusion_matrices.png
 
 
-This is an Udacity project for the Robotics Software Nanodegree Program. the main purpose of the project is to detect different objects with an RGB-D camera. The project is developed in ROS environment and uses gazebo and rviz to simulate the camera and the robot that is supposed to recognize the objects.
+**This is an Udacity project for the Robotics Software Nanodegree Program. the main purpose of the project is to detect different objects with an RGB-D camera. The project is developed in ROS environment and uses gazebo and rviz to simulate the camera and the robot that is supposed to recognize the objects.**
 
-For this simulation, the objective is to recognice eight diferent objects comming from differents "worlds" in the simulation. (sticky_notes, book, snacks, biscuits, eraser, soap2, soap, glue)
+**For this simulation, the objective is to recognice eight diferent objects comming from differents "worlds" in the simulation. (sticky_notes, book, snacks, biscuits, eraser, soap2, soap, glue)**
 
 ![simulation_objects][world3]
 
-Before we start filtering the objects, is necessary to train the SVM file to identify each object. We are setting up to [SVM file]() with linear kernel and the [caputure_feature]() script to spaw the objects 100 times.
 
-The [features]() to recognize each object are histograms of the color with 48 bins.
-To train the file we run a launcher file named [robot_spawn]() which spawn each object in the gazebo environment to be recognized and captured in different positions for our SVM file, then we use this script to create confusion matrices that display the results as follows.
+
+Before we start filtering the objects, is necessary to train the SVM file to identify each object. We are setting up to [SVM file](https://github.com/csilver2/RoboND-Perception-Project/blob/master/train_svm.py) with linear kernel and the [caputure_feature](https://github.com/csilver2/RoboND-Perception-Project/blob/master/capture_features.py) script to spaw the objects 100 times.
+
+The [features](https://github.com/csilver2/RoboND-Perception-Project/blob/master/features.py) to recognize each object are histograms of the color with 48 bins.
+To train the file we run a launcher file named ```robot_spawn.launch``` which spawn each object in the gazebo environment to be recognized and captured in different positions for our SVM file, then we use this script to create confusion matrices that display the results as follows.
+
+
 
 ![terminal][image6]
 ![confusion_matrices][matrix1]
@@ -47,7 +51,7 @@ The RGB-D camera gathers a dense point cloud data that can slow down the time of
 
 ![voxel_example][image2]
 
-##### Pass Throuhg Filtering
+#### Pass Throuhg Filtering
 
 This function allows us to cut or filter a section of the space through the x, y, and z planes, and we would use it this time to separate the table and the objects from the rest of the stuff around the robot.
 
@@ -79,17 +83,17 @@ The best value that I found to set up the bin histogram is 48, the result is goo
 
 - Training the data set
 
-	-[feature.py]()
+	-[feature.py](https://github.com/csilver2/RoboND-Perception-Project/blob/master/features.py)
 		*Create the histograms features in this file*
-	-[capture_feature.py]()
-		*Take the features and determine the number of times the program will spawn the objects in gazevo*
-	-[training.SVM]
+	-[capture_feature.py](https://github.com/csilver2/RoboND-Perception-Project/blob/master/capture_features.py)
+		*Take the features and determine the number of times the program will spawn the objects in gazebo*
+	-[training.SVM](https://github.com/csilver2/RoboND-Perception-Project/blob/master/train_svm.py)
 		*This file set al the features to train the robot with the data*
 
-- ROS node and rviz conection [object_recognision.py]() (Line 288-316)
+- ROS node and rviz conection [object_recognision.py](https://github.com/csilver2/RoboND-Perception-Project/blob/master/pr2_robot/scripts/object_recognition.py) (Line 288-316)
 	- node (292)
 	- subscriber (295)
-	- publicher (297-303)
+	- publisher (297-303)
 		*sending the results for each filter to rviz*
 
 - RANSAC/Segmentation (53-104)
@@ -100,7 +104,7 @@ The best value that I found to set up the bin histogram is 48, the result is goo
 
 	-Displaying outliner/inliner (101-104) 
 
-- Clusteirng (107-153)
+- Clustering (107-153)
 
 - Object Recognition & labeling (155-202)
 
@@ -110,6 +114,13 @@ The best value that I found to set up the bin histogram is 48, the result is goo
 
 	- output_*.yaml (285-286) 
 		*[output_1.yaml](), [output_2.yaml](), [output_3.yaml]()*
+
+
+
+
+
+
+
 
 
 
