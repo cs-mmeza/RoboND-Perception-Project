@@ -1,68 +1,120 @@
 ## Project: Perception Pick & Place
-
-## Robot Arm Kinematics Project 
+ 
 -----------------------------------------
 [//]: # (Image and equiation References)
 [world3]: ./images/world3.png
 [image1]: ./images/dust.png
-[image2]: ./images/.png
+[image2]: ./images/voxel.PNG
+[image3]: ./images/pass_trought.PNG
+[image4]: ./images/ransac.png
+[image5]: ./images/Clustering2.png
+[image6]: ./images/terminal_svm.png
+[image7]: ./images/result.png
 [matrix1]:./images/confusion_matrices.png
-(Introduction)
 
-This is an Udacity project for the Robotics Software Nanodegree Program, involvin the topic of sensor detection with an rgb-d sensor. The project is developed in ROS environment and uses gazebo and rviz to simulate the sensor and the robot that would recognize and move the objects.
 
- 
-(Development)
+This is an Udacity project for the Robotics Software Nanodegree Program. the main purpose of the project is to detect different objects with an RGB-D camera. The project is developed in ROS environment and uses gazebo and rviz to simulate the camera and the robot that is supposed to recognize the objects.
 
-### 1.
-The project consiste in recognice eight diferent objects, comming from differents "worlds" in the simulation. (sticky_notes, book, snacks, biscuits, eraser, soap2, soap, glue)
+For this simulation, the objective is to recognice eight diferent objects comming from differents "worlds" in the simulation. (sticky_notes, book, snacks, biscuits, eraser, soap2, soap, glue)
 
 ![simulation_objects][world3]
 
-To train an SVM model to identify each model, we are setting up to SVM with linear kernel and the ![]caputure_feature.py script to spaw the objects 100 times.
-the features to recognize each object are a histograms of the color and a 3D vector for each point cloud caputed by the RGB-D camera.
-once we capute the data for each object pawning in different positions we use this script to show the training data obtaining the next result.
+Before we start filtering the objects, is necessary to train the SVM file to identify each object. We are setting up to [SVM file]() with linear kernel and the [caputure_feature]() script to spaw the objects 100 times.
 
+The [features]() to recognize each object are histograms of the color with 48 bins.
+To train the file we run a launcher file named [robot_spawn]() which spawn each object in the gazebo environment to be recognized and captured in different positions for our SVM file, then we use this script to create confusion matrices that display the results as follows.
+
+![terminal][image6]
 ![confusion_matrices][matrix1]
 
-### 2.
+### ROS node.
 
-The simulations in ROS include a RGB-D camera able to capture the objects shown above,  to create a filter that label and recognice each object, we need to create a node and subscruve to `/pr2/world/points`topic. the image detected for the camera looks like this.
+The simulations in ROS include an RGB-D camera able to capture the objects.  To create a filter that labels and recognizes each object, we need to create a node and subscribe to the data creating this topic to the subscriber ```/pr2/world/points```. the image detected for the camera looks like this.
 
 ![dust_original][image1]
 
-### 3.
+### Image segmentation. 
 
-### RANSAC
+_**In this project to recognize the objects in 3D space is necessary to use different algorithms and methods that allow us to separate each object by data points.**_
 
-The 3D data displayed for the camera contains a lot of "dust" closer to the objects this makes which are difficult to recognice like this. Thus we would apply different prosedures to filter this points.
-
-The fisrt step is to apply a outliner filter that remove all the points furder from the object edges.
-
-![dist_filter_result][image2]
+#### Statistical outliner filtering
+The 3D data displayed for the camera contains a lot of "dust" closer to the objects. This makes the objects more difficult to recognize. Thus we would apply different procedures to filter this points.
+First, we apply a _statistical outliner filter_ to the image. this filter removes all the points furder from the object which ins this case is the inliner.
 
 
-statistical filtering
+#### Voxel
+The RGB-D camera gathers a dense point cloud data that can slow down the time of our process, in this case, is recommended to use a voxel grid filter to downgrade the points quantity used in our segmentation process.
 
-voxel
+![voxel_example][image2]
 
-filtering
+##### Pass Throuhg Filtering
 
-RANSAC
+This function allows us to cut or filter a section of the space through the x, y, and z planes, and we would use it this time to separate the table and the objects from the rest of the stuff around the robot.
+
+#### RANSAC/Segmentation
+
+This algorithm allows us to separate the inliner and outliner data, being the inliner all the points that follow a specific pattern, and outliner the data that does not follow the same pattern. in this case, it separates the points shaping the table and the ones that shape the objects.
+
+![ransac_result][image4]
+
+
+#### Euclidean clustering
+
+Clustering is necessary to separate the points that shape each object in our point cloud data set.  In this section, we are using DBSCAN algorithm to organize the point cloud corresponding to each object and separating them by color.
+
+![clustering_result][image5]
 
 (Conclusion-n-Comments)
 
-(Code Implementation)
+#### Labeling
+Ones we can separate each objects by point clouds, we can label the cloud data with the name of each object.
+
+![label_result][image6]
+.
+
+#### About the result and the project
+The best value that I found to set up the bin histogram is 48, the result is good but even with the 94% of precision and all the time I spent changing the values for the filter, there are two items that the system does not recognise correctly some times in world3 (glue and sticky_notes).the solution for this may be setting up a higher spawning time for capture_feature script.
+
 ### Code Index
 
--
-	-
-	-
-	-
--
--
-	-
-	-
+- Training the data set
+
+	-[feature.py]()
+		*Create the histograms features in this file*
+	-[capture_feature.py]()
+		*Take the features and determine the number of times the program will spawn the objects in gazevo*
+	-[training.SVM]
+		*This file set al the features to train the robot with the data*
+
+- ROS node and rviz conection [object_recognision.py]() (Line 288-316)
+	- node (292)
+	- subscriber (295)
+	- publicher (297-303)
+		*sending the results for each filter to rviz*
+
+- RANSAC/Segmentation (53-104)
+	- Statistical outliner filtering (60-65)
+	- Voxel (67-72)
+	- Pass trhough Filtering (74-90)
+	- RANSAC (92-99)
+
+	-Displaying outliner/inliner (101-104) 
+
+- Clusteirng (107-153)
+
+- Object Recognition & labeling (155-202)
+
+- Cloud centroids $ output.yaml(206-286)
+	
+	- Cloud centroids (248-258)
+
+	- output_*.yaml (285-286) 
+		*[output_1.yaml](), [output_2.yaml](), [output_3.yaml]()*
+
+
+
+
+
 
 ### Writeup Template: You can use this file as a template for your writeup if you want to submit it as a markdown file, but feel free to use some other method and submit a pdf if you prefer.
 

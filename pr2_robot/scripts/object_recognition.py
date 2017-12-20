@@ -49,9 +49,8 @@ def send_to_yaml(yaml_filename, dict_list):
 # Callback function for your Point Cloud Subscriber
 def pcl_callback(pcl_msg):
 
-# Exercise-2 TODOs:
 
-    # TODO: Convert ROS msg to PCL data
+    #### Convert ROS msg to PCL data
     cloud = ros_to_pcl(pcl_msg)
 
     ##############                     ###############
@@ -202,7 +201,8 @@ def pcl_callback(pcl_msg):
     except rospy.ROSInterruptException:
         pass
     
-# function to load parameters and request PickPlace service
+#### function to load parameters and request PickPlace service ####
+
 def pr2_mover(object_list):
 
     #### Initialize variables
@@ -274,6 +274,7 @@ def pr2_mover(object_list):
         place_pose.position.x = dict_dropbox[arm_name.data][0]
         place_pose.position.y = dict_dropbox[arm_name.data][1]
         place_pose.position.z = dict_dropbox[arm_name.data][2]
+        
         dict_list.append(make_yaml_dict(test_scene_num, arm_name, object_name, pick_pose, place_pose))
 
         # Wait for 'pick_place_routine' service to come up
